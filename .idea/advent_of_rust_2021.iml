@@ -3,7 +3,9 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/aoc15/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/aoc16/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/aoc15/target" />
+      <excludeFolder url="file://$MODULE_DIR$/aoc16/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
