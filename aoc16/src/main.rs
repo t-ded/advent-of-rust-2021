@@ -33,12 +33,18 @@ fn binary_string_from_hex_string(hex_string: &str) -> String {
 }
 
 #[derive(Debug)]
+enum PacketContents {
+    Number(u32),
+    SubPackets(Vec<Packet>),
+}
+
+#[derive(Debug)]
 struct Packet {
     hex_string: String,
     binary_string: String,
     version: u8,
     type_id: u8,
-    number: u32, // TODO: Operator packets
+    contents: PacketContents,
 }
 
 impl Packet {
@@ -49,7 +55,7 @@ impl Packet {
             binary_string: "".to_string(),
             version: 0,
             type_id: 0,
-            number: 0
+            contents: PacketContents::Number(0),
         }
     }
 
@@ -80,7 +86,7 @@ impl Packet {
                     binary_string,
                     version,
                     type_id,
-                    number,
+                    contents: PacketContents::Number(number),
                 }
             },
 
