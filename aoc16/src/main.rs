@@ -45,12 +45,12 @@ enum PacketContents {
 #[allow(dead_code)]
 #[derive(Debug)]
 struct Packet {
-    // hex_string: String,
     binary_string: String,
     version: u128,
     type_id: u128,
     contents: PacketContents,
     version_sum: u128,
+    value: u128,
 }
 
 impl Packet {
@@ -58,12 +58,12 @@ impl Packet {
     #[allow(dead_code)]
     fn new() -> Packet {
         Packet {
-            // hex_string: "".to_string(),
             binary_string: "".to_string(),
             version: 0,
             type_id: 0,
             contents: PacketContents::Number(0),
             version_sum: 0,
+            value: 0,
         }
     }
 
@@ -97,17 +97,17 @@ impl Packet {
                 }
                 let number = u128::from_str_radix(&literal, 2).unwrap();
                 Packet {
-                    // hex_string: String::from(hex_string),
                     binary_string: binary_string[..last_idx].to_string(),
                     version,
                     type_id,
                     contents: PacketContents::Number(number),
                     version_sum,
+                    value: number,
                 }
             },
 
             // Operator packet
-            type_id => {
+            operator_type_id => {
                 let length_type_id = u128::from_str_radix(&binary_string[6..7], 2).unwrap();
                 let mut last_bit = 0;
                 let mut subpackets = Vec::new();
@@ -136,14 +136,30 @@ impl Packet {
                     },
                     _ => {},
                 }
+                let value = Self::get_operator_value(&subpackets, operator_type_id);
                 Packet {
                     binary_string: binary_string[..(last_bit as usize)].to_string(),
                     version,
                     type_id,
                     contents: PacketContents::SubPackets(subpackets),
                     version_sum,
+                    value
                 }
             },
+        }
+    }
+
+    fn get_operator_value(subpackets: &Vec<Packet>, operator_type_id: u128) -> u128 {
+        let mut subpackets_value_iterator = subpackets.iter().map(|subpacket| subpacket.value);
+        match operator_type_id {
+            0 => { subpackets_value_iterator.sum() },
+            1 => { subpackets_value_iterator.product() },
+            2 => { subpackets_value_iterator.min().unwrap() },
+            3 => { subpackets_value_iterator.max().unwrap() },
+            5 => { (subpackets_value_iterator.next().unwrap() > subpackets_value_iterator.next().unwrap()) as u128 },
+            6 => { (subpackets_value_iterator.next().unwrap() < subpackets_value_iterator.next().unwrap()) as u128 },
+            7 => { (subpackets_value_iterator.next().unwrap() == subpackets_value_iterator.next().unwrap()) as u128 },
+            _ => { panic!("Operator with unknown operator type ID encountered {}", operator_type_id) },
         }
     }
 }
@@ -153,6 +169,7 @@ fn main() {
     let input = fs::read_to_string("input.txt").expect("Cannot read input.txt");
     let packet = Packet::from_hex_string(&input);
     println!("{:?}", packet.version_sum);
+    println!("{:?}", packet.value);
 }
 
 #[cfg(test)]
