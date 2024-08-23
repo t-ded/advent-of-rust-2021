@@ -1,4 +1,3 @@
-use std::fs;
 use std::io;
 use pheap::PairingHeap;
 
@@ -6,14 +5,12 @@ const INF: u64 = u64::MAX;
 const NEIGHBOURS: [[i32; 2]; 4] = [[-1, 0], [1, 0], [0, -1], [0, 1]];
 
 
-// From ChatGPT - TODO: Go through and understand!
-fn read_input(filename: &str) -> io::Result<Vec<Vec<u32>>> {
-    let content = fs::read_to_string(filename)?;
+fn read_input(content: &str) -> io::Result<Vec<Vec<u32>>> {
     let grid = content
         .lines()
         .map(|line| {
             line.chars()
-                .map(|c| c.to_digit(10).expect("Invalid input"))
+                .map(|c| c.to_digit(10).expect("Invalid inputs"))
                 .collect()
         })
         .collect();
@@ -62,10 +59,27 @@ fn expand_grid(original_grid: &Vec<Vec<u32>>) -> Vec<Vec<u32>> {
     expanded_grid
 }
 
-fn main() {
-    if let Ok(grid) = read_input("input.txt") {
-        println!("{}", maze_shortest_path(&grid));
+// fn main() {
+//     if let Ok(grid) = read_input("inputs.txt") {
+//         println!("{}", maze_shortest_path(&grid));
+//         let expanded_grid = expand_grid(&grid);
+//         println!("{}", maze_shortest_path(&expanded_grid));
+//     };
+// }
+
+pub fn part_1(input: &str) -> u64 {
+    if let Ok(grid) = read_input(input) {
+        maze_shortest_path(&grid)
+    } else {
+        panic!()
+    }
+}
+
+pub fn part_2(input: &str) -> u64 {
+    if let Ok(grid) = read_input(input) {
         let expanded_grid = expand_grid(&grid);
-        println!("{}", maze_shortest_path(&expanded_grid));
-    };
+        maze_shortest_path(&expanded_grid)
+    } else {
+        panic!()
+    }
 }

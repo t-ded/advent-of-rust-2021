@@ -1,8 +1,5 @@
-#[macro_use]
-extern crate lazy_static;
-
 use std::collections::HashMap;
-use std::fs;
+use lazy_static::lazy_static;
 
 lazy_static! {
     static ref HEX_FIELD_BINARY_DICT: HashMap<char, &'static str> = HashMap::from([
@@ -165,16 +162,27 @@ impl Packet {
 }
 
 
-fn main() {
-    let input = fs::read_to_string("../aoc16/input.txt").expect("Cannot read input.txt");
+// fn main() {
+//     let input = fs::read_to_string("../aoc16/inputs.txt").expect("Cannot read inputs.txt");
+//     let packet = Packet::from_hex_string(&input);
+//     println!("{:?}", packet.version_sum);
+//     println!("{:?}", packet.value);
+// }
+
+pub fn part_1(input: &str) -> u128 {
     let packet = Packet::from_hex_string(&input);
-    println!("{:?}", packet.version_sum);
-    println!("{:?}", packet.value);
+    packet.version_sum
 }
+
+pub fn part_2(input: &str) -> u128 {
+    let packet = Packet::from_hex_string(&input);
+    packet.value
+}
+
 
 #[cfg(test)]
 mod tests {
-    use crate::Packet;
+    use super::Packet;
 
     #[test]
     fn version_sums() {
