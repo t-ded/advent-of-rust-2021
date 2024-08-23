@@ -166,7 +166,7 @@ impl Packet {
 
 
 fn main() {
-    let input = fs::read_to_string("input.txt").expect("Cannot read input.txt");
+    let input = fs::read_to_string("../aoc16/input.txt").expect("Cannot read input.txt");
     let packet = Packet::from_hex_string(&input);
     println!("{:?}", packet.version_sum);
     println!("{:?}", packet.value);
