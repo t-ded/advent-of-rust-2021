@@ -6,8 +6,9 @@ pub struct Array2D<T> {
     values: Vec<T>,
 }
 
+#[allow(dead_code)]
 impl<T> Array2D<T> {
-    pub fn from_string<F: Fn(char) -> T>(raw_input: &str, n_rows: usize, n_cols: usize, char_transformer: F) -> Self<T> {
+    pub fn from_string<F: Fn(char) -> T>(raw_input: &str, n_rows: usize, n_cols: usize, char_transformer: F) -> Self {
         let len: usize = raw_input.len();
         assert_eq!(n_rows * n_cols, len, "Given 2D array size was expected to be {n_rows}x{n_cols} but got {len}!");
         let mut values: Vec<T> = Vec::with_capacity(len);
@@ -22,10 +23,10 @@ impl<T> Array2D<T> {
     }
 
     fn is_within(&self, coordinate: Index2D) -> bool {
-        0 <= coordinate.row && coordinate.row < self.n_rows && 0 <= coordinate.col && coordinate.col < self.n_cols
+        coordinate.row < self.n_rows && coordinate.col < self.n_cols
     }
 
-    fn get_by_point(&self, coordinate: Index2D) -> Option<T> {
+    fn get_by_point(&self, coordinate: Index2D) -> Option<&T> {
         if self.is_within(coordinate) {
             Some(&self.values[self.n_cols * coordinate.row + coordinate.col])
         } else {
@@ -33,16 +34,17 @@ impl<T> Array2D<T> {
         }
     }
 
-    pub fn get(&self, row: usize, col: usize) -> Option<T> {
+    pub fn get(&self, row: usize, col: usize) -> Option<&T> {
         self.get_by_point(Index2D{row, col})
     }
 }
 
+#[allow(dead_code)]
 impl<T: Display> Array2D<T> {
     pub fn print(&self) {
-        for row in self.n_rows {
-            for col in self.n_cols {
-                print!("{} ", self.get(row, col));
+        for row in 0..self.n_rows {
+            for col in 0..self.n_cols {
+                print!("{} ", self.get(row, col).unwrap());
             }
             println!();
         }
@@ -55,6 +57,7 @@ pub struct Index2D {
     col: usize,
 }
 
+#[allow(dead_code)]
 impl Index2D {
     pub fn row(&self) -> usize {
         self.row
@@ -67,24 +70,45 @@ impl Index2D {
 
 #[derive(Copy, Clone)]
 pub struct Coordinate {
-    x: usize,
-    y: usize,
+    x: isize,
+    y: isize,
 }
 
+#[allow(dead_code)]
 impl Coordinate {
-    pub fn x(&self) -> usize {
+    pub fn x(&self) -> isize {
         self.x
     }
 
-    pub fn y(&self) -> usize {
+    pub fn y(&self) -> isize {
         self.y
     }
 
-    pub fn change_x(&mut self, new_x: usize) {
+    pub fn from_coordinates(x: isize, y: isize) -> Self {
+        Coordinate {x, y}
+    }
+
+    pub fn change_x(&mut self, new_x: isize) {
         self.x = new_x;
     }
 
-    pub fn change_y(&mut self, new_y: usize) {
+    pub fn increment_x(&mut self, increment: isize) {
+        self.x += increment;
+    }
+
+    pub fn decrement_x(&mut self, decrement: isize) {
+        self.x -= decrement;
+    }
+
+    pub fn change_y(&mut self, new_y: isize) {
         self.y = new_y;
+    }
+
+    pub fn increment_y(&mut self, increment: isize) {
+        self.y += increment;
+    }
+
+    pub fn decrement_y(&mut self, decrement: isize) {
+        self.y -= decrement;
     }
 }
