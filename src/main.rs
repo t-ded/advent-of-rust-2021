@@ -3,6 +3,7 @@ mod benchmark;
 mod day_15;
 mod day_16;
 mod day_17;
+mod day_18;
 
 mod array_2d;
 
@@ -14,6 +15,7 @@ fn main() {
     benchmark_all!(
         day_15,
         day_16,
-        day_17
+        day_17,
+        day_18
     );
 }
